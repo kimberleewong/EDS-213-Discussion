@@ -1,0 +1,24 @@
+# Create a new R Markdown Quarto document
+---
+title: "Data Exploration"
+author: "Your Name"
+date: "`r Sys.Date()`"
+format: html
+---
+
+# Introduction
+
+This document explores the dataset for the LEGO project.
+
+# Load Libraries
+```{r}
+library(tidyverse)
+library(here)
+```
+
+```{r}
+sets <- read_csv(here("lego_project/data/sets.csv"))
+
+
+
+```
