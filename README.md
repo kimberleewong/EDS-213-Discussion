@@ -5,6 +5,8 @@ Image credits: Unsplash/Xavi Cabrera
 
 ## About
 
+## Data
+
 ## Repository Structure
 ```
 lego_database
@@ -23,3 +25,5 @@ lego_database
 |   │   ├── sets.csv
 |   │   ├── themes.csv
 ```
+## Sources
+
