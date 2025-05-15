@@ -16,7 +16,6 @@ The data comes from Kaggle, a data sciene platform and community. The database w
 ```
 lego_database
 │
-├── .DS_Store                                           
 ├── README.md                                            
 ├── .gitignore
 ├── Dependencies
