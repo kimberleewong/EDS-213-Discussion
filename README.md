@@ -4,7 +4,7 @@
 Image credits: Unsplash/Xavi Cabrera
 
 ## About
-Kimberlee Wong
+Author: Kimberlee Wong
 
 This repository shows the process of taking data about Legos, processing it, and then uploading it into a database in order to write an SQL query to answer a specific question. There is a data cleaning file and data visualization file both done in R, and the original SQL query was written using DuckDB. 
 
