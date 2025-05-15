@@ -1,15 +1,8 @@
-# Create a new R Markdown Quarto document
 ---
-title: "Data Exploration"
-author: "Your Name"
-date: "`r Sys.Date()`"
-format: html
+output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
-
-# Introduction
-
-This document explores the dataset for the LEGO project.
-
 # Load Libraries
 ```{r}
 library(tidyverse)
@@ -18,7 +11,36 @@ library(here)
 
 ```{r}
 sets <- read_csv(here("lego_project/data/sets.csv"))
-
-
-
 ```
+
+## Goal is to fix rows where there are accidental quotes
+```{r}
+# Load necessary libraries
+library(tidyverse)
+library(here)
+
+# Read the CSV with relaxed quote handling
+sets <- read_csv(here("lego_project/data/sets.csv"))
+
+# Look at the problematic rows
+problematic_rows <- sets %>% filter(grepl("\"", name))
+print(problematic_rows)
+
+# Fix all problematic names by removing quotes
+sets_fixed <- sets %>% 
+  mutate(name = gsub("\"", "", name))
+
+# Check that quotes were removed
+check_fixed <- sets_fixed %>% filter(grepl("Crawler|Joker|Scarecrow|Face|Bane|Vader|Woman", name))
+print(check_fixed)
+
+# Write the fixed CSV back
+write_csv(sets_fixed, here("lego_project/data/sets_fixed.csv"))
+```
+
+
+
+
+
+
+

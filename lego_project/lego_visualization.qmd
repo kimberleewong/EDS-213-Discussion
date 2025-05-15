@@ -1,0 +1,88 @@
+---
+title: "Lego Visualization"
+author: Kimmy Wong
+embed-resources: true
+format: html
+editor_options: 
+  chunk_output_type: console
+---
+
+## Load Libraries
+```{r}
+library(tidyverse)
+library(here)
+library(RColorBrewer)
+library(DBI)
+library(duckdb)
+```
+
+## Connect to Lego Database
+```{r}
+conn <- DBI::dbConnect(duckdb::duckdb(), dbdir = "lego_project/lego.db")
+```
+
+## Save tables 
+```{r}
+sets <- tbl(conn, "sets")
+themes <- tbl(conn, "themes")
+colors <- tbl(conn, "colors")
+inventories <- tbl(conn, "inventories")
+inventory_parts <- tbl(conn, "inventory_parts")
+```
+
+
+```{r}
+ninjago_colors <- inventory_parts %>%
+  
+  # JOIN inventories ON inventory_parts.inventory_id = inventories.id
+  inner_join(inventories, by = c("inventory_id" = "id")) %>%
+  
+  # JOIN sets ON inventories.set_num = sets.set_num
+  inner_join(sets, by = "set_num") %>%
+  
+  # JOIN colors ON inventory_parts.color_id = colors.id
+  inner_join(colors, by = c("color_id" = "id")) %>%
+  
+  # WHERE sets.theme_id = 435
+  filter(theme_id == 435) %>%
+  
+  # GROUP BY colors.name, colors.rgb
+  group_by(name.y, rgb) %>%
+  
+  # COUNT(*) AS color_count
+  summarise(color_count = n(), .groups = "drop") %>%
+  
+  # Add # to RGB values like in SQL
+  mutate(color_rgb = paste0("#", rgb)) %>%
+  
+    # ORDER BY color_count DESC
+  arrange(desc(color_count)) %>%
+  
+  # Rename for ease
+  rename(color_name = name.y) %>%
+  
+  # Drop original color_rgb column without '#'
+  select(color_name, color_count, color_rgb) %>% 
+  
+  # LIMIT 10
+  head(n = 10)
+
+print(ninjago_colors)
+```
+
+### Visualize
+```{r}
+ggplot(ninjago_colors, aes(x = reorder(color_name, color_count), y = color_count)) +
+  geom_col(aes(fill = color_rgb)) +
+  scale_fill_identity() +
+  coord_flip() +
+  labs(y = "Piece Count", x = "Color", title = "Top Ten Colors in Lego Ninjago Sets") +
+  theme_minimal()
+```
+
+### Close the Connection
+```{r}
+DBI::dbDisconnect(conn, shutdown = TRUE)
+```
+
+
